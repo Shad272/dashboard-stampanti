@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Stampanti · Monitor locale</title>
+<style>
+:root{color-scheme:light;--ink:#193047;--muted:#637687;--line:#dee5ea;--paper:#fff;--back:#f3f5f7;--blue:#1b56cc}*{box-sizing:border-box}body{margin:0;background:var(--back);font:14px system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink)}header{background:#142c43;color:#fff;padding:24px 4vw;display:flex;justify-content:space-between;gap:20px;align-items:center}h1{font-size:25px;margin:0 0 5px;letter-spacing:-.6px}.eyebrow{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#acc7da;margin-bottom:9px}.sub{color:#aec3d3;font-size:13px}button,input,select{font:inherit}button,.link{border:1px solid var(--line);border-radius:8px;background:white;color:var(--ink);padding:10px 14px;cursor:pointer;text-decoration:none;display:inline-block}button:hover,.link:hover{border-color:#93a9ba}button:disabled{cursor:wait;opacity:.65}.primary{background:#2f6ced;border-color:#2f6ced;color:white}.actions{display:flex;gap:10px;align-items:center}main{max-width:1640px;margin:auto;padding:28px 4vw}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}.stat{background:white;border:1px solid var(--line);border-radius:10px;padding:18px}.stat b{display:block;font-size:28px;font-weight:650;margin-top:6px}.stat span{color:var(--muted);font-size:12px}.tools{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:16px}input,select{padding:11px 14px;border:1px solid var(--line);border-radius:8px;background:white;color:var(--ink)}input{flex:1;min-width:220px}.legend{color:var(--muted);font-size:12px;line-height:1.7;margin:12px 0 20px}.legend span{margin-right:14px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;background:#97a5b2}.green{color:#197044}.orange{color:#a85a09}.red{color:#b42e35}.dot.green{background:#25a46a}.dot.orange{background:#e19b32}.dot.red{background:#d94d53}#banner{padding:13px 16px;border-radius:8px;background:#fff0d9;color:#875210;margin:0 0 18px}#banner[hidden]{display:none}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:18px}.card{background:white;border:1px solid var(--line);border-radius:12px;overflow:hidden}.card-top{padding:20px 20px 14px;display:flex;gap:10px;justify-content:space-between;align-items:start}.card h2{font-size:18px;margin:0 0 5px}.meta{font-size:12px;color:var(--muted);line-height:1.65}.pill{font-size:11px;padding:5px 8px;border-radius:6px;white-space:nowrap;background:#edf3f8;color:#4c647a}.pill.good{background:#e8f5ed;color:#226541}.pill.warn{background:#fff0d9;color:#94520a}.pill.bad{background:#fdebed;color:#9c2732}.body{padding:0 20px 18px}.error,.warnbox{background:#fff5e6;border-radius:7px;padding:11px;font-size:12px;line-height:1.6;margin-bottom:13px}.error{background:#fceef0;color:#963c45}.supply{padding:9px 0}.supplyline{display:flex;justify-content:space-between;gap:12px;font-size:12px}.supplyline strong{font-weight:600;overflow-wrap:anywhere}.track{height:6px;background:#edf0f4;border-radius:10px;margin:7px 0 4px;overflow:hidden}.fill{height:100%;background:#209868;border-radius:10px}.fill.orange{background:#e39a31}.fill.red{background:#d44c55}.hint{font-size:11px;color:var(--muted)}.footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding:12px 20px;background:#fafbfd}.footer .link{padding:6px 10px;font-size:12px}.empty{color:var(--muted);padding:18px 0;line-height:1.7;font-size:13px}details{margin-top:14px;font-size:12px}summary{cursor:pointer;color:var(--blue)}dl{display:grid;grid-template-columns:90px 1fr;gap:8px;margin-top:14px}dt{color:var(--muted)}dd{margin:0;overflow-wrap:anywhere}ul{padding-left:18px;line-height:1.7}.tag-stale{background:#fff0d9;color:#94520a;padding:9px;margin-bottom:10px;border-radius:6px;font-size:12px}#cycle{font-size:12px;color:#c1d1dc;margin-top:8px}#noresults{color:var(--muted);padding:30px 0}a{color:var(--blue)}.help{margin-top:28px;background:white;border:1px solid var(--line);border-radius:10px;padding:18px 22px;line-height:1.8}.help summary{font-size:14px}code{font-size:12px;background:#edf1f5;padding:2px 5px;border-radius:4px}@media(max-width:700px){header{align-items:start;flex-direction:column}.stats{grid-template-columns:repeat(2,1fr)}main{padding:20px}.grid{grid-template-columns:1fr}.actions{flex-wrap:wrap}}
+.printer-actions{display:flex;gap:6px;align-items:center;justify-content:flex-end;flex-wrap:wrap}.footer{gap:8px;flex-wrap:wrap}.printer-actions .link{white-space:nowrap}</style></head><body>
+<header><div><div class="eyebrow">CED / Monitor locale</div><h1>Le tue stampanti, aggiornate.</h1><div class="sub">Consumabili, avvisi e contatori dalla rete dell’ufficio</div></div><div><div class="actions"><button id="export">Esporta letture</button><button class="primary" id="refresh">↻ Aggiorna ora</button></div><div id="cycle" role="status">Caricamento…</div></div></header>
+<main><div id="banner" hidden role="alert"></div><div class="legend"><span id="mailstatus" role="status"></span> <button id="test-email" type="button">Invia email di test</button><span id="test-email-result" role="status" style="display:block"></span></div><section class="stats" aria-label="Riepilogo"><div class="stat"><span>Stampanti configurate</span><b id="total">—</b></div><div class="stat"><span>Risposte ricevute</span><b id="responding">—</b></div><div class="stat"><span>Avvisi o consumabili bassi</span><b id="attention">—</b></div><div class="stat"><span>Lettura non disponibile</span><b id="unavailable">—</b></div></section>
+<div class="tools"><input id="search" type="search" placeholder="Cerca ufficio, marca o indirizzo IP…" aria-label="Cerca stampante"><select id="filter" aria-label="Filtra stato"><option value="all">Tutte le stampanti</option><option value="attention">Con avvisi / livelli bassi</option><option value="unavailable">Lettura non disponibile</option><option value="ok">Con risposta</option></select></div>
+<div class="legend"><span><i class="dot green"></i>Quasi piena / almeno metà</span><span><i class="dot orange"></i>Meno di metà</span><span><i class="dot red"></i>Quasi esaurita (fino al 20%)</span><br>Barre toner nel colore della cartuccia; colori delle percentuali = stato del livello. Le percentuali provengono dalla stampante. Le stime da indicatore grafico sono riconoscibili come stime; un livello sconosciuto resta —.</div>
+<section id="cards" class="grid" aria-label="Stampanti"></section><div id="noresults" hidden>Nessuna stampante corrisponde al filtro.</div>
+<details class="help"><summary>Come funziona e cosa fare se mancano dati</summary><p>Il servizio legge le stampanti ogni <b id="interval">60</b> secondi e la pagina controlla le nuove letture ogni 3 secondi. “Aggiorna ora” richiede un nuovo ciclo. I dati vengono letti via SNMP v1 o v2c sulla porta UDP 161; SNMP deve essere abilitato e la community di lettura deve corrispondere a quella in <code>stampanti.json</code>.</p><p>“Nessuna risposta” può dipendere da rete, community o impostazioni SNMP. Non significa necessariamente che la stampante sia spenta. I campi non esposti dalla macchina restano —. Modello, nome e seriale iniziale provengono dall’inventario; consumabili, avvisi e contatori sono letti dal dispositivo. Un seriale rilevato automaticamente sostituisce quello iniziale.</p><p>Le barre toner usano il colore della cartuccia. Il colore delle percentuali indica il livello, con soglie locali: rosso ≤20%, arancione &gt;20% e &lt;50%, verde ≥50%. Gli avvisi originali della stampante sono mostrati separatamente, anche quando usano soglie diverse. Per i contenitori di raccolta viene mostrato lo <b>spazio residuo</b>. Per dati solo grafici una stima viene mostrata esclusivamente se disponibile da un lettore compatibile; il sistema non ricicla le vecchie stime degli screenshot come letture attuali.</p><p>Per cambiare IP, community o intervallo modifica <code>stampanti.json</code> con Blocco note e riavvia. La pagina è accessibile solo dal PC che avvia il programma. Per fermarlo usa il collegamento Arresta Dashboard nella cartella del programma.</p></details>
+</main>
+<script>
+'use strict';
+let state=null, connected=false, busy=false;
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??'—').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const date=v=>v?new Date(v).toLocaleString('it-IT'):'—';
+function grade(n){return n<=20?'red':n<50?'orange':'green'}
+function label(n){return n<=20?'Quasi esaurita':n<50?'Meno di metà':'Quasi piena / almeno metà'}
+function attention(p){return !!(p.ok&&((p.alerts||[]).filter(a=>!(p.informational_alerts||[]).includes(a)).length||(p.supplies||[]).some(s=>s.percent!==null&&s.percent<=20)))}
+function cartridgeColor(s,model=''){
+ const name=String(s.name||'').toLowerCase();
+ if(s.receptacle||/waste|scarto|raccolta|drum|tamburo|fotorecettore|developer|svilupp|fusore|fuser|kit|rull/.test(name))return null;
+ if(!/toner|cartridge|cartuccia|ink|inchiostro/.test(name))return null;
+ if(/\b(black|nero|nera)\b/.test(name))return '#202124';
+ if(/\b(cyan|ciano)\b/.test(name))return '#00a9d6';
+ if(/\bmagenta\b/.test(name))return '#d50087';
+ if(/\b(yellow|giallo|gialla)\b/.test(name))return '#f1cd00';
+ if(/B7030|E73030/i.test(model))return '#202124';
+ return null;
+}
+function supply(s,model=''){
+ const n=typeof s.percent==='number'?s.percent:null;
+ const visual=s.visual_estimate;
+ const cls=n!==null?grade(n):({'almost_empty':'red','below_half':'orange','almost_full':'green'}[visual]||'');
+ const text=n!==null?`${n}%`:({'almost_empty':'Quasi esaurita','below_half':'Meno di metà','almost_full':'Quasi piena'}[visual]||(s.level===-3?'Presente':'—'));
+ const detail=n!==null?(s.receptacle?'Spazio residuo · ':'')+label(n):visual?'Stima visiva dalla lettura corrente':s.detail||'Livello non esposto';
+ const width=n!==null?n:({'almost_empty':12,'below_half':37,'almost_full':80}[visual]);
+ const ink=cartridgeColor(s,model);
+ return `<div class="supply"><div class="supplyline"><strong>${esc(s.name)}</strong><span class="${cls}">${esc(text)}</span></div>${width!==undefined?`<div class="track"><div class="fill ${cls}" style="width:${Math.max(0,Math.min(100,width))}%;${ink?'background:'+ink:''}"></div></div>`:''}<div class="hint">${esc(detail)}</div></div>`;
+}
+function printerPanel(data){
+ const trays=data.trays||[], devices=data.devices||[], consoleText=data.console||[];
+ const counters=(data.counters||[]).map(c=>`<li>${Number(c.value).toLocaleString('it-IT')} ${c.unit===7?'impressioni':c.unit===8?'fogli':'unità'} · contatore ${esc(c.id)}</li>`).join('');
+ return `<div style="border-top:1px solid var(--line);margin-top:16px;padding-top:14px"><b>Stato e contatori</b><p class="meta">${esc((data.status||[]).join(', ')||'Stato non esposto')}</p>${consoleText.length?`<p>${consoleText.map(esc).join('<br>')}</p>`:''}${counters?`<ul>${counters}</ul>`:'<p class="hint">Contatori non esposti.</p>'}<b>Vassoi carta</b>${trays.length?trays.map(t=>`<div class="supply"><div class="supplyline"><strong>${esc(t.name)}</strong><span>${t.percent===null?'—':esc(t.percent)+'%'}</span></div><div class="hint">${esc(t.detail)}${t.capacity>0?' · capacità '+esc(t.capacity)+(t.unit===8?' fogli':' unità'):''}</div><div class="hint">${[t.media,t.media_type,t.media_color].filter(Boolean).map(esc).join(' · ')}</div></div>`).join(''):'<p class="hint">Informazioni vassoi non esposte.</p>'}${devices.length?`<details><summary>Dispositivi e scanner, se esposti</summary><ul>${devices.map(d=>`<li>${esc(d.name)}: ${esc(d.status)}</li>`).join('')}</ul></details>`:''}</div>`;
+}
+function orderPhotoreceptor(p){
+ const data=!p.ok&&p.last_good?p.last_good:p;
+ const counters=(data.counters||[]).filter(c=>c.unit===7&&Number.isFinite(c.value));
+ const office=String(p.name||'').split(' · ')[0];
+ const q=new URLSearchParams({id:p.id,office,model:p.model||'—',serial:data.serial||p.serial||'—',
+   counter:p.ok&&counters.length===1?Number(counters[0].value).toLocaleString('it-IT'):'—',
+   read_at:data.read_at||'',stale:p.ok?'0':'1'});
+ return `<a class="link" href="/richiesta-fotorecettore?${esc(q.toString())}" target="_blank" rel="noopener noreferrer" style="background:#234970;color:white">Ordina fotoricettore</a>`;
+}
+
+function card(p){
+ const stale=!p.ok&&p.last_good, data=stale?p.last_good:p;
+ const supplies=data.supplies||[],info=data.informational_alerts||[],alerts=(data.alerts||[]).filter(a=>!info.includes(a)),warns=data.warnings||[];
+ let pill=!p.ip?'IP da inserire':!p.ok?'Non disponibile':attention(p)?'Da controllare':'Risposta ricevuta';
+ const tone=!p.ok?'bad':attention(p)?'warn':'good';
+ const counters=(data.counters||[]).map(c=>`${Number(c.value).toLocaleString('it-IT')} ${c.unit===7?'impressioni':c.unit===8?'fogli':`unità (codice ${c.unit??'—'})`} · contatore ${esc(c.id)}`);
+ let url=null;try{const u=new URL(data.web);if(['http:','https:'].includes(u.protocol)&&u.hostname===p.ip)url=u.href}catch{}
+ return `<article class="card"><div class="card-top"><div><h2>${esc(p.name)}</h2><div class="meta">${esc(p.model)}<br>${esc(p.ip)} · ${esc(p.id)}</div></div><span class="pill ${tone}">${pill}</span></div><div class="body">${!p.ok?`<div class="error">${esc(p.error)}</div>`:''}${info.length?`<div class="meta" style="margin-bottom:12px"><b>Informazioni</b><ul>${info.map(a=>`<li>${esc(a)}</li>`).join('')}</ul></div>`:''}${stale?`<div class="tag-stale">Ultima lettura riuscita: ${esc(date(data.read_at))}. Questi dati non sono attuali.</div>`:''}${alerts.length?`<div class="warnbox"><b>Avvisi della stampante</b><ul>${alerts.map(a=>`<li>${esc(a)}</li>`).join('')}</ul></div>`:''}${supplies.length?supplies.map(s=>supply(s,p.model)).join(''):`<div class="empty">${p.ok?'La stampante risponde, ma non espone consumabili leggibili.':'Consumabili: —'}</div>`}${printerPanel(data)}<details><summary>Identità, contatori e diagnostica</summary><p class="hint">Durante la consultazione la scheda resta ferma per consentire la copia. Chiudi i dettagli per visualizzare gli ultimi dati raccolti.</p><dl><dt>Matricola</dt><dd>${esc(data.serial)}</dd><dt>Protocollo</dt><dd>${esc(data.protocol)}</dd><dt>Stato</dt><dd>${esc((data.status||[]).join(', ')||'—')}</dd><dt>Contatori</dt><dd>${counters.length?counters.join('<br>'):'—'}</dd><dt>Descrizione</dt><dd>${esc(data.description)}</dd></dl>${warns.length?`<ul>${warns.map(w=>`<li>${esc(w)}</li>`).join('')}</ul>`:''}</details></div><div class="footer"><span class="hint">${data.read_at?esc(date(data.read_at)):'Nessuna lettura disponibile'}</span><span class="printer-actions">${orderPhotoreceptor(p)}${url?`<a class="link" href="${esc(url)}" target="_blank" rel="noopener noreferrer">Apri stampante ↗</a>`:''}</span></div></article>`;
+}
+function render(){
+ if(!state)return;
+ $('mailstatus').textContent='Notifiche email: '+(state.notifiche||'in attesa del primo ciclo');
+ const items=state.printers||[];
+ $('total').textContent=state.configured_count??items.length;
+ $('responding').textContent=items.filter(p=>p.ok).length;
+ $('attention').textContent=items.filter(attention).length;
+ $('unavailable').textContent=items.filter(p=>!p.ok).length;
+ $('interval').textContent=state.interval_seconds;
+ const q=$('search').value.trim().toLowerCase(),f=$('filter').value;
+ const shown=items.filter(p=>[p.name,p.ip,p.model,p.id].join(' ').toLowerCase().includes(q)).filter(p=>f==='all'||f==='attention'&&attention(p)||f==='unavailable'&&!p.ok||f==='ok'&&p.ok);
+ // Riutilizza le schede: nessuna sostituzione durante lettura o copia.
+ const container=$('cards'), existing=new Map([...container.querySelectorAll('article')].map(e=>[e.dataset.id,e]));
+ const wanted=new Set(shown.map(p=>p.id));
+ for(const e of container.children){if(!wanted.has(e.dataset.id))e.remove()}
+ shown.forEach((p,i)=>{
+   let node=existing.get(p.id);
+   const html=card(p), selection=window.getSelection();
+   const selecting=selection&&!selection.isCollapsed&&node&&([...Array(selection.rangeCount).keys()].some(i=>selection.getRangeAt(i).intersectsNode(node)));
+   const reading=node&&([...node.querySelectorAll('details')].some(d=>d.open)||selecting);
+   if(!node||(!reading&&node._renderedHtml!==html)){
+     const template=document.createElement('template');template.innerHTML=html;
+     const next=template.content.firstElementChild;next.dataset.id=p.id;next._renderedHtml=html;
+     if(node)node.replaceWith(next);node=next;
+   }
+   if(container.children[i]!==node)container.insertBefore(node,container.children[i]||null);
+ });
+ $('noresults').hidden=shown.length>0||(!items.length&&state.refreshing);
+ if(!items.length&&state.refreshing)$('cards').innerHTML='<div class="empty">Caricamento delle stampanti… Le schede compariranno appena arrivano le risposte.</div>';
+ tick();
+}
+function tick(){if(!state||!connected)return;const left=Math.max(0,Math.ceil((state.next_cycle||Date.now()/1000)-Date.now()/1000));$('cycle').textContent=state.refreshing?'Lettura delle stampanti in corso…':`Prossimo aggiornamento tra ${left}s · Ultimo ciclo ${date(state.last_cycle)}`;$('refresh').disabled=state.refreshing;}
+async function poll(){if(busy)return;busy=true;try{const r=await fetch('/api/status',{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);state=await r.json();connected=true;$('banner').hidden=true;render()}catch(e){connected=false;$('banner').hidden=false;$('banner').textContent='Servizio locale non raggiungibile. Usa la scorciatoia Dashboard Stampanti sul desktop per riavviarlo. Eventuali dati mostrati sono precedenti e non aggiornati.';$('cycle').textContent='Connessione al servizio interrotta';$('refresh').disabled=true}finally{busy=false}}
+$('refresh').onclick=async()=>{try{$('refresh').disabled=true;const r=await fetch('/api/refresh',{method:'POST'});if(!r.ok)throw Error();await poll()}catch{await poll()}};
+$('cards').addEventListener('toggle',e=>{if(e.target.tagName==='DETAILS'&&!e.target.open)setTimeout(render,0)},true);
+$('test-email').onclick=async()=>{const b=$('test-email'),out=$('test-email-result');b.disabled=true;out.textContent='Invio del messaggio di prova…';try{const r=await fetch('/api/test-email',{method:'POST'});const data=await r.json();out.textContent=data.message||'Risposta non disponibile.'}catch(e){out.textContent='Servizio locale non raggiungibile: riavvia la dashboard.'}finally{b.disabled=false}};
+$('search').oninput=render;$('filter').onchange=render;
+$('export').onclick=()=>{if(!state){alert('Non ci sono ancora letture da esportare.');return}const blob=new Blob([JSON.stringify({...state,exported_at:new Date().toISOString()},null,2)],{type:'application/json'});const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='letture-stampanti-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
+if(location.protocol==='file:'){$('banner').hidden=false;$('banner').textContent='Per leggere le stampanti avvia AVVIA_DASHBOARD.cmd. Il servizio aprirà la pagina all’indirizzo http://127.0.0.1:8767.'}else{poll();setInterval(poll,3000);setInterval(tick,1000)}
+</script></body></html>

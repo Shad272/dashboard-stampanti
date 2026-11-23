@@ -1,0 +1,93 @@
+{
+  "interval_seconds": 30,
+  "community": "public",
+  "printers": [
+    {
+      "id": "ST-001",
+      "name": "Biblioteca · Canon",
+      "ip": "10.250.0.11",
+      "model": "Canon iR-ADV C5850",
+      "serial": "DEMO-C5850-01",
+      "web": "http://10.250.0.11:8000",
+      "snmp_version": "1"
+    },
+    {
+      "id": "ST-002",
+      "name": "Protocollo · Canon",
+      "ip": "10.250.0.12",
+      "model": "Canon iR-ADV C3826",
+      "serial": "DEMO-C3826-02",
+      "web": "http://10.250.0.12:8000",
+      "snmp_version": "1"
+    },
+    {
+      "id": "ST-003",
+      "name": "Edilizia privata · HP",
+      "ip": "10.250.0.13",
+      "model": "HP PageWide Color 755",
+      "web": "https://10.250.0.13"
+    },
+    {
+      "id": "ST-004",
+      "name": "Segreteria · HP",
+      "ip": "10.250.0.14",
+      "model": "HP PageWide Color 755",
+      "web": "https://10.250.0.14"
+    },
+    {
+      "id": "ST-005",
+      "name": "Lavori pubblici · Canon",
+      "ip": "10.250.0.15",
+      "model": "Canon iR-ADV C5850",
+      "serial": "DEMO-C5850-05",
+      "web": "http://10.250.0.15:8000",
+      "snmp_version": "1"
+    },
+    {
+      "id": "ST-006",
+      "name": "Tributi · HP",
+      "ip": "10.250.0.16",
+      "model": "HP LaserJet MFP E73030",
+      "web": "https://10.250.0.16"
+    },
+    {
+      "id": "ST-007",
+      "name": "Polizia locale · Canon",
+      "ip": "10.250.0.17",
+      "model": "Canon iR-ADV C5850",
+      "serial": "DEMO-C5850-07",
+      "web": "http://10.250.0.17:8000",
+      "snmp_version": "1"
+    },
+    {
+      "id": "ST-008",
+      "name": "Servizi sociali · Canon",
+      "ip": "10.250.0.18",
+      "model": "Canon iR-ADV C5850",
+      "serial": "DEMO-C5850-08",
+      "web": "http://10.250.0.18:8000",
+      "snmp_version": "1"
+    },
+    {
+      "id": "ST-009",
+      "name": "Anagrafe · Xerox",
+      "ip": "10.250.0.19",
+      "model": "Xerox VersaLink B7030 MFP",
+      "serial": "DEMO-B7030-09",
+      "web": "https://10.250.0.19"
+    },
+    {
+      "id": "ST-010",
+      "name": "Ragioneria · Xerox",
+      "ip": "10.250.0.20",
+      "model": "Xerox VersaLink B7030 MFP",
+      "web": "https://10.250.0.20"
+    },
+    {
+      "id": "ST-011",
+      "name": "Sala riunioni · Brother",
+      "ip": "",
+      "model": "Brother MFC-L8900CDW"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+DASHBOARD STAMPANTI - VERSIONE DIMOSTRATIVA
+
+Il programma è quello usato in ufficio, senza modifiche al funzionamento.
+Sono stati sostituiti solo i dati: uffici, indirizzi IP, matricole, recapiti
+e nomi sono inventati. In più c'è demo_simulatore.py, che permette di
+provarlo senza avere stampanti.
+
+REQUISITI
+- Python 3.10 o successivo (da python.org) e un browser.
+
+PROVA CON LE STAMPANTI SIMULATE (consigliata)
+- Windows: doppio clic su DEMO_SIMULATORE.cmd.
+- Linux o macOS: apri un terminale in questa cartella e scrivi
+  python3 demo_simulatore.py
+- Si apre http://127.0.0.1:8767. Per terminare chiudi la finestra
+  o premi Ctrl+C.
+
+La demo avvia sul tuo PC dieci stampanti finte che rispondono come stampanti
+vere. Nessuna lettura va in rete e le email di avviso sono disattivate.
+
+COSA VEDRAI
+- Biblioteca: stampa in corso, colori a livelli diversi, tre contatori.
+- Protocollo: toner ciano quasi finito, con avviso e messaggio sul display.
+- Edilizia privata: un inchiostro con livello sconosciuto (mostrato come —,
+  mai come 0%) e la testina segnalata solo come "Presente".
+- Segreteria: risponde solo con il protocollo più vecchio (SNMPv1): la
+  dashboard ci riprova da sola e lo segnala nella diagnosi.
+- Lavori pubblici: spenta, non risponde.
+- Tributi: toner nero al 23% che scende di un punto al minuto: dopo pochi
+  minuti passa sotto il 20% e diventa rosso.
+- Polizia locale: risponde solo nel primo mezzo minuto, poi tace. La
+  dashboard mostra l'ultima lettura valida e lo dice chiaramente.
+- Servizi sociali: carta inceppata, con avviso e messaggio sul display.
+- Anagrafe: fotoricettore quasi esaurito. Da qui si apre il modulo di
+  richiesta precompilato (non invia ordini).
+- Ragioneria: due contatori diversi, quindi il modulo lascia il contatore
+  da compilare a mano.
+- Sala riunioni: senza indirizzo IP, da configurare.
+Colori: rosso fino al 20%, arancione sotto il 50%, verde dal 50% in su.
+
+ALTRE COSE DA SAPERE
+- AVVIA_DASHBOARD.cmd avvia il programma normale, che legge gli indirizzi
+  di stampanti.json. Quelli presenti sono inventati: per usarlo con stampanti
+  vere inserisci i loro indirizzi e la community di sola lettura.
+- Le email di avviso usano Outlook classico su Windows e un destinatario
+  inventato (dominio .example, che non esiste): va cambiato in notifiche.py.
+- "Apri stampante" porta all'indirizzo inventato, quindi non si apre.
+- Per provarla non serve installare l'avvio automatico.
+
+Verifiche fatte su Linux con Python 3.12 e Chrome: test automatici del
+programma, demo con le stampanti simulate, lettura di tutti i casi elencati
+e apertura del modulo. Gli avvii .cmd, l'avvio automatico e Outlook non
+sono stati provati su un PC Windows.

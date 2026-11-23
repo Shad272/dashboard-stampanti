@@ -1,0 +1,259 @@
+DASHBOARD STAMPANTI LOCALE
+
+AVVIO SILENZIOSO v6 SU WINDOWS
+1. Chiudi il vecchio servizio, se ancora aperto.
+2. Estrai tutto lo ZIP in una cartella definitiva, per esempio
+   Documenti\Dashboard-Stampanti. Non spostarla dopo l'installazione.
+3. Se avevi personalizzato community o IP, copia qui il tuo stampanti.json.
+4. Esegui INSTALLA_AVVIO_AUTOMATICO.cmd UNA SOLA VOLTA.
+   Questa configurazione mostra una finestra temporanea, poi puoi chiuderla.
+5. In seguito usa Dashboard Stampanti sul desktop: nessuna console.
+
+La configurazione crea, solo per il tuo utente:
+- Un collegamento di avvio automatico nella cartella Esecuzione automatica.
+- Un collegamento sul desktop che avvia il server se spento e apre il browser.
+- Apri Dashboard.lnk e Arresta Dashboard.lnk nella cartella del programma.
+- Il protocollo stampanti-locali://apri per i preferiti del browser.
+Non richiede privilegi amministratore. Serve Python 3.10+ con pythonw.exe.
+
+QUANDO ACCENDI IL PC
+Al tuo accesso a Windows il server parte senza terminale e senza aprire il browser.
+Questo non e un servizio di sistema: non parte prima del login dell'utente.
+Resta attivo se chiudi il browser e si ferma a disconnessione o spegnimento PC.
+
+PREFERITO NEL BROWSER
+Nel preferito "Stampanti - Monitor locale" puoi usare come indirizzo:
+stampanti-locali://apri
+Questo richiama l'avviatore silenzioso e apre http://127.0.0.1:8767.
+Il browser puo chiedere una conferma per aprire l'applicazione locale.
+L'indirizzo http://127.0.0.1:8767 normale funziona quando il server e gia acceso,
+ma da solo non puo avviare un programma Windows spento.
+Durante la prima lettura la pagina mostra Caricamento delle stampanti.
+I successivi clic riutilizzano il server esistente.
+
+ARRESTO E RIMOZIONE
+Per fermare il server: Arresta Dashboard.lnk nella cartella.
+Per togliere avvio automatico, protocollo e collegamenti:
+RIMUOVI_AVVIO_AUTOMATICO.cmd. I file dell'applicazione non vengono eliminati.
+Se l'avvio fallisce: controlla dashboard.log e avvio.log nella stessa cartella.
+
+Il funzionamento quotidiano non richiede Internet, npm o pacchetti pip.
+Avvio automatico e protocollo devono essere verificati sul tuo Windows: qui
+sono verificati lettore, API, interfaccia e logica di avvio senza ambiente Windows.
+
+CONFIGURAZIONE
+Versione dimostrativa: stampanti.json contiene 11 stampanti inventate.
+Per provarla senza stampanti vere leggi LEGGIMI_DEMO.txt.
+Intervallo predefinito: 60 secondi dopo ogni ciclo (minimo ammesso: 30).
+La pagina riceve le nuove letture ogni 3 secondi. Puoi richiedere un ciclo subito.
+Per cambiare configurazione modifica il JSON e riavvia il servizio.
+
+REQUISITI SULLE STAMPANTI
+Il programma esegue soltanto letture SNMP v1/v2c, su UDP 161. Non modifica le stampanti.
+SNMP deve essere abilitato e la community READ deve essere corretta.
+Il valore iniziale "public" e' un valore comune, NON verificato sulle tue macchine.
+Se viene usato un altro valore sostituiscilo in "community" nel JSON.
+Per una singola macchina puoi aggiungere "community": "valore" nel suo oggetto.
+Non usare la community di scrittura. Se la tua rete richiede SNMPv3, questo
+pacchetto v2c deve essere adattato: non cambiare le policy della rete per usarlo.
+
+COSA VIENE LETTO
+- Consumabili esposti dalla Printer MIB: toner, inchiostri, kit, fotorecettori,
+  contenitori e altri elementi che il produttore rende disponibili.
+- Livello residuo, avvisi testuali, seriale, contatori e stato se esposti.
+- I contatori multipli sono tenuti distinti; non sono sommati arbitrariamente.
+- Carta e componenti non esposti da queste tabelle non sono inventati.
+Il protocollo standard non garantisce che ogni modello esponga ogni campo.
+
+COLORI E STIME
+Rosso = quasi esaurita, arancione = meno di meta', verde = quasi piena.
+Sui livelli numerici usiamo: rosso <=20%, arancione >20% e <50%, verde >=50%.
+Queste sono soglie della dashboard; gli avvisi originali restano separati.
+Le barre dei toner usano nero, ciano, magenta o giallo secondo la cartuccia.
+Lo stato del livello resta indicato dal testo e dal colore della percentuale.
+Le barre degli altri consumabili mantengono i colori del livello.
+Per contenitori di raccolta il valore esprime lo spazio ancora disponibile.
+Il valore sconosciuto resta —: mai trasformato in 0%.
+Se SNMP espone un numero anche per HP PageWide, viene usato quel numero.
+Questa prima versione NON analizza le pagine web o la lunghezza dei loro pixel.
+Se una stampante espone solo una barra nel sito web e non un livello SNMP, il
+campo resta —. L'interfaccia e' predisposta per ricevere stime visive da un
+futuro lettore del sito, riconoscibili dalla dicitura "Stima visiva".
+Le stime storiche degli screenshot non sono mostrate come dati in tempo reale.
+
+DIAGNOSI
+- Nessuna risposta SNMP: controlla rete, IP, community READ, UDP 161 e SNMP v1/v2c.
+- Pagina stampante raggiungibile ma SNMP assente: sono protocolli separati.
+- Porta 8767 occupata: chiudi un'eventuale precedente istanza della dashboard.
+- Alcuni campi mancanti: il modello potrebbe non esporli nella MIB standard.
+- Ultima lettura: data e ora reali della raccolta; il vecchio dato e' segnalato
+  esplicitamente quando una lettura successiva fallisce.
+- Esporta letture produce JSON con dati e diagnostica, senza community.
+
+LIMITI DI VERIFICA
+Il codice e' verificato con un simulatore SNMP locale. Non e' stato possibile
+interrogare da qui la rete dell'ufficio; il primo avvio verifica la compatibilita'
+effettiva di ciascuna macchina. La lettura richiede fino a circa 22 secondi per
+stampante, in parallelo. Non e' un flusso istantaneo di eventi.
+
+RIFERIMENTO TECNICO
+Printer MIB v2, RFC 3805: https://www.rfc-editor.org/rfc/rfc3805
+
+AGGIORNAMENTO COMPATIBILITA CANON
+Le Canon sono configurate per SNMPv1. Le altre provano v2c e v1.
+Le letture hanno un secondo tentativo in caso di timeout.
+Nelle Canon verificare Impostazioni/Registrazione > Preferenze > Rete >
+Impostazioni SNMP: community READ corretta e Rifiuta pacchetti SNMP durante
+modalita riposo. Se il blocco in riposo e attivo la macchina potrebbe non
+rispondere mentre dorme. Provare prima con la macchina sveglia.
+Questo aggiornamento non modifica le impostazioni delle stampanti.
+
+ESTENSIONE XEROX v5
+Per le due Xerox sono lette anche le tabelle vassoi (nome, carta, capacita,
+quantita), dispositivi Host Resources e messaggi del display, se esposti.
+Contatori distinti e stato macchina vengono mostrati direttamente nella scheda.
+Il messaggio 016-424 low power/no action e mostrato come informazione.
+Fusori/rulli con valore -3 sono mostrati come Presente, senza percentuale.
+Nessun OID proprietario Xerox non verificato e stato introdotto.
+Il test con simulatore verifica campi disponibili e assenti; la reale copertura
+delle due B7030 va verificata in ufficio. Esporta letture conserva i nuovi dati.
+
+CORREZIONE BROWSER v7
+Il collegamento stampanti-locali://apri ora avvia esplicitamente Chrome.
+Per aggiornare dalla v6 sostituisci solo launcher.pyw nella cartella installata.
+Non serve reinstallare il protocollo o cambiare il browser predefinito.
+Chrome riceve una richiesta di nuova scheda; non viene controllata o sostituita
+la specifica scheda da cui e stato cliccato il preferito.
+Per navigare nella scheda corrente, con server gia attivo, usa come preferito
+http://127.0.0.1:8767. L avvio automatico mantiene normalmente acceso il server.
+
+MODULO ANAGRAFE v9 - POSIZIONE E DATI CORRETTI
+Il pulsante Ordina fotoricettore e nel footer della scheda ST-009, immediatamente
+accanto ad Apri stampante. Nessun pulsante sulle altre stampanti.
+Il modulo riprende la tabella originale; dal TXT sono aggiornati soltanto:
+seriale DEMO-B7030-09, destinatario richieste@fornitore-di-esempio.example, telefono 000 0000000.
+Gli altri dati restano come nel modello, compresi 123.456 copie e 14/08/2025.
+Il contatore non viene sostituito dalla lettura live. I campi sono modificabili.
+Il pulsante prepara il modulo, non invia ordini.
+Per aggiornare: arresta il servizio, sostituisci server.py e index.html,
+aggiungi/sostituisci Richiesta_Fotorecettore_Anagrafe.html e riavvia.
+Mantieni il tuo stampanti.json e premi Ctrl+F5 nel browser.
+
+AGGIORNAMENTO v11
+Raccolta estesa di vassoi, dispositivi e console per tutte le marche tramite
+le tabelle SNMP standard gia utilizzate per Xerox. La disponibilita effettiva
+dipende dal modello: campi non esposti restano senza valore.
+Le schede aperte o con testo selezionato restano ferme per consentire la copia;
+la raccolta continua in background. Chiudi i dettagli e deseleziona il testo
+per visualizzare gli ultimi dati. Le altre schede continuano ad aggiornarsi.
+Per aggiornare: arresta il servizio, sostituisci server.py e index.html nella
+cartella gia usata, poi riavvia Dashboard Stampanti e premi Ctrl+F5.
+Conserva il tuo stampanti.json e i collegamenti gia installati.
+
+AGGIORNAMENTO v12 - MODULO FOTORECETTORE
+Il pulsante di ogni scheda apre il modulo con modello, matricola e ufficio
+rispettivi. Il contatore viene compilato solo se la lettura corrente contiene
+un unico contatore di impressioni; altrimenti resta da compilare.
+Data odierna e recapiti di Noemi Sanna precompilati.
+Per uffici diversi da Anagrafe: verificare e compilare via, numero civico,
+fornitore, destinatario e lotto; questi dati non si ricavano da SNMP.
+Testi e celle sono modificabili direttamente; grassetto, corsivo e annulla
+sono disponibili nella barra superiore. Scarica modulo compilato conserva
+le modifiche anche riaprendo il file senza server.
+Impaginazione A4 orizzontale compatta e adattamento automatico prima della
+stampa. Nel dialogo stampa usare scala predefinita e disattivare intestazioni
+e pie di pagina. Il vecchio PDF statico e sostituito dal modulo modificabile.
+Per aggiornare arrestare Dashboard e sostituire index.html e
+Richiesta_Fotorecettore_Anagrafe.html nella cartella gia in uso.
+Riavviare Dashboard e premere Ctrl+F5. Non usare un vecchio modulo scaricato.
+
+NOTIFICHE CON OUTLOOK CLASSICO - v15
+La dashboard usa Outlook classico aperto nella stessa sessione Windows.
+Non richiede password o parametri SMTP nel programma. Usa l'account predefinito
+configurato in Outlook e invia a ced@comune-di-esempio.example.
+Per provare, apri Outlook e premi Invia email di test. Verifica eventuali
+richieste di sicurezza di Outlook, la Posta in uscita e la Posta inviata,
+poi controlla la ricezione nella casella CED. Se Outlook non e disponibile o
+la policy blocca l'invio, la dashboard indica l'errore e riprova al ciclo.
+La conferma Outlook non garantisce la consegna. La prova non altera lo stato
+degli avvisi. Gli avvisi partono per livelli numerici fino al 20%; viene inviato
+un avviso per episodio. Livelli sconosciuti non generano email automatiche.
+Il monitor e Outlook devono rimanere aperti nella stessa sessione Windows.
+L'eventuale file notifiche.json precedente non viene piu usato; se contiene
+password rimuovile con cura. Conserva notifiche_stato.json durante aggiornamenti.
+Per aggiornare arresta il server, sostituisci notifiche.py, riavvia dashboard e
+apri Outlook. Non sostituire stampanti.json o notifiche_stato.json.
+
+AVVIO AUTOMATICO E CONTROLLO OUTLOOK - v16
+Estrai lo ZIP in una cartella definitiva. Arresta la dashboard vecchia e copia
+server.py, notifiche.py, launcher.pyw e Configura_Avvio.ps1 nella stessa
+cartella, conservando stampanti.json e notifiche_stato.json. Esegui
+INSTALLA_AVVIO_AUTOMATICO.cmd come utente Windows del CED; questo registra
+un'attivita pianificata per quell'utente, eseguita dopo il suo accesso a Windows,
+senza finestra del terminale. Non e un servizio prima del login. La rimozione
+avviene con RIMUOVI_AVVIO_AUTOMATICO.cmd. Non spostare la cartella installata.
+Ad ogni ciclo il programma controlla Outlook classico e tenta di avviarlo
+minimizzato se chiuso. Potrebbero comparire accesso, richieste di profilo o
+avvisi di sicurezza. Outlook e dashboard devono essere nello stesso utente e
+sessione Windows. Gli avvisi usano l'account predefinito di Outlook e sono
+inviati a ced@comune-di-esempio.example. Su riavvio con consumabili gia bassi
+possono partire email automatiche; il file notifiche_stato.json evita duplicati.
+Verifica l'avvio dopo un riavvio, l'eventuale richiesta di Outlook, poi premi
+Invia email di test e controlla posta inviata e ricezione effettiva. Una
+conferma Outlook non garantisce consegna. Se Outlook non viene rilevato,
+consultare dashboard.log e aprire Outlook classico manualmente.
+
+PORTA NUOVA v17
+Dashboard stampanti: http://127.0.0.1:8767 (solo sul PC).
+Chiudi la dashboard stampanti precedente prima di aggiornare: la vecchia
+usava la porta 8765. Conserva stampanti.json e notifiche_stato.json.
+Esegui INSTALLA_AVVIO_AUTOMATICO.cmd dalla cartella definitiva per aggiornare
+le scorciatoie e l attività pianificata. Aggiorna eventuali preferiti HTTP.
+
+CORREZIONE v18: il controllo non riavvia Outlook se il processo Outlook e
+gia presente nella stessa sessione, anche se non e ancora pronto. Un blocco
+impedisce avvii simultanei da copie della dashboard. Se Outlook e gia aperto
+ma non risponde, controllare eventuali richieste e riavviarlo manualmente.
+
+COMANDI PRESENTI NELLA CARTELLA - v19
+AVVIA_DASHBOARD.cmd: avvia il server, se necessario, e apre Chrome.
+ARRESTA_DASHBOARD.cmd: ferma solo il server stampanti, senza chiudere Outlook.
+INSTALLA_AVVIO_AUTOMATICO.cmd: abilita avvio al login Windows dell utente.
+RIMUOVI_AVVIO_AUTOMATICO.cmd: rimuove avvio automatico e ferma il server.
+I file CMD funzionano senza creare prima collegamenti .lnk.
+Dopo l aggiornamento chiudere il vecchio server e rilanciare quello nuovo.
+Non sovrascrivere stampanti.json e notifiche_stato.json personalizzati.
+
+VERSIONE v20 - OUTLOOK SENZA APERTURE AUTOMATICHE
+La dashboard NON apre Outlook. Verifica solo se Outlook classico e pronto.
+Se Outlook e chiuso, gli avvisi restano in attesa e vengono riprovati al
+controllo successivo. Apri Outlook nella stessa sessione dell utente Windows.
+Puoi usare Nascondi quando ridotto a icona nell area notifiche di Outlook.
+Non e garantito che Outlook sia invisibile al primo avvio o durante richieste
+di accesso/sicurezza. Controlla Posta inviata e ricezione del messaggio test.
+Per aggiornare arresta il server con ARRESTA_DASHBOARD.cmd, sostituisci
+notifiche.py e riavvia con AVVIA_DASHBOARD.cmd.
+
+PROVA OUTLOOK NASCOSTO ALL AVVIO - v21
+Dopo l aggiornamento esegui INSTALLA_AVVIO_AUTOMATICO.cmd dallo stesso
+account Windows del CED. All accesso la dashboard controlla Outlook: se e
+gia in esecuzione non modifica le finestre; altrimenti prova ad avviarlo
+minimizzato e nasconde la finestra iniziale del processo appena avviato.
+Per mostrarlo usa il collegamento Apri Outlook CED sul desktop. Se Outlook
+non e in esecuzione il collegamento tenta un avvio normale. Gli altri modi
+di aprire Outlook possono comportarsi diversamente e aprire un altra finestra.
+Se esistono altri avvii automatici di Outlook possono interferire: verificare
+Esecuzione automatica e le impostazioni IT prima di cambiare quelle voci.
+Verifica messaggi di login o richieste di sicurezza, che non vengono nascosti
+di proposito; il file outlook_avvio.log descrive eventuali errori. L invio
+delle email e sempre subordinato a Outlook pronto e connesso. La prima
+comparsa della finestra non e garantita invisibile su tutte le installazioni.
+Arresta server, copia i file nuovi senza sovrascrivere stampanti.json e
+notifiche_stato.json, quindi reinstalla avvio automatico e prova a riavviare.
+
+VERSIONE v22: il controllo al login tenta di nascondere la finestra iniziale
+anche se Outlook e gia in esecuzione, senza avviare una seconda istanza.
+Al momento dell installazione il server parte senza nascondere Outlook; la
+prova del nascondimento avviene al successivo accesso a Windows.
+Apri Outlook CED sul desktop per ripristinare la finestra. Se trovi piu avvii
+di Outlook in Windows possono ancora interferire; non vengono eliminati.
